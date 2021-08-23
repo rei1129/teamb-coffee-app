@@ -36,6 +36,7 @@
               {{ option.text }}
         </option>
       </select>
+      {{orderTime}}
       </div>
         <div>
           <h1>お支払い方法</h1>
@@ -171,17 +172,21 @@ methods: {
 
       let selectedDay = date.getDate()
       let nowHour = today.getHours()
-      let a = Math.abs(this.ordertime - nowHour)
+      let a = Math.abs(this.CustomerInfo.orderTime - nowHour)
 
       if(nowDay === selectedDay){
         console.log('同じ日付です')
-        if( this.ordertime <= nowHour){
+        if( this.CustomerInfo.orderTime <= nowHour){
            console.log('時間がおかしいです')
           return false
-        } else if( 3 <= a)
+        } else if( 3 <= a) {
         console.log('時間は正常です')
         return true
-      }//ここまで同じ日の場合の処理
+        } else {
+        return false
+        }
+      }
+      //ここまで同じ日の場合の処理
          else if(nowDay >= selectedDay){
         console.log('本日以降の日付を選択してください')
         return false
