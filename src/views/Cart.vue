@@ -2,17 +2,12 @@
     <div>
         <h1>ショッピングカート</h1>
         <div v-if="!$store.state.login_user">カートを見るにはログインが必要です。</div>
-        <!-- <div v-if="this.cartContent.length === 0">
-            <h1>カートに商品がありません!!</h1>
-        </div> -->
-        <!-- <div v-if="this.cartContent.length >= 1"> -->
             <h2 v-if="$store.state.login_user">{{$store.state.login_user.displayName}}さんのカート</h2>
-            
+            <div v-if="!cartContent.length">※カートに商品がありません</div>
             <div v-if="$store.state.login_user">
-                <table border="1">
+                <table border="1" v-if="cartContent.length">
                     <tr v-for="(cart, index) in cartContent" :key="cart.id">
-                        <!-- <td v-for="(topping, index) in cart.choseToopings" :key="t"> -->
-                            <!-- <img :src="cart.imageURL"> -->
+                        <!-- カートのidを元に商品リストから商品の名前を表示 -->
                             <p>商品名：{{ getItem(cart.id).name }}</p>
                             <p>サイズ：{{cart.itemSize}}</p>
                             <p>追加トッピング：{{cart.choseToppings}}</p>
@@ -53,7 +48,6 @@ import {mapActions, mapGetters} from 'vuex'
 export default {
     data(){
         return{
-            //{ ID: 1, name: 'Gorgeous4サンド', contents: '人気の定番具材「ハム」と「チキン」をセットにした食べごたえ抜群のサンドイッチです', priceM: 480, priceL: 700, imageURL: require('@/assets/img_coffee/1.jpg') },
         }
     },
 
@@ -68,6 +62,7 @@ export default {
     computed:{
         cartContent(){
             console.log(this.$store.state.useCart.Items)
+            //カート情報が入っていれば
             if(this.$store.state.useCart.Items){
                  return this.$store.state.useCart.Items.concat();      
             }

@@ -50,7 +50,6 @@ created(){
     firebase.auth().onAuthStateChanged(user =>{ //リダイレクト後
       if(user){
         this.setLoginUser(user) //ログインユーザー情報をセット
-
         this.fecthCartItem() // ログインユーザーのcartItemを追加する！
         }else{
           this.deleteLoginUser() //ログインユーザー情報を削除
@@ -62,10 +61,6 @@ created(){
    ...mapActions(['setLoginUser','logout','deleteLoginUser','fecthCartItem'])
   },
   computed:{
-    test(){
-      console.log(this.cartItemList)
-      return 0
-    },
     ...mapGetters(['cartItemList'])
   }
 }

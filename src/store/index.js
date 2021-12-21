@@ -46,6 +46,7 @@ export default new Vuex.Store({
       // console.log(state.cartList);
     },
     updateCart(state, { selectItem }) {
+      //stateのカート情報のItems配列に選択された商品を追加
       state.useCart.Items.push(selectItem)
       console.log(state.useCart)
     },
@@ -54,15 +55,19 @@ export default new Vuex.Store({
       console.log('detailChangeCart完了！');
       console.log(state.cartList);
     },
+    //statusが0のショッピングカートはuseCart{}に保存
     useCart(state, { id, cartItem }) {
+      //stateにfirestoreのカート情報を保存
       state.useCart = cartItem;
       state.useCart.orderID = id;
       console.log(state.useCart);
     },
+    //statusが0以外の購入済みの場合は、履歴としてhistoryCart{}に入れる
     historyCart(state, { id, cartItem }) {
       state.historyCart.id = id;
       state.historyCart.push(cartItem);
     },
+    //Itemsの中身を更新
     deleteFromCart(state, cart) {
       state.useCart.Items = cart.concat()
     },
@@ -111,11 +116,12 @@ export default new Vuex.Store({
     },
     //ユーザーがログインしてたらカートに入れる処理
     addCartItem({ getters, commit, state }, selectItem) {
+      //カート情報を一旦変数に保存
       let usecartInfo = Object.assign({}, state.useCart)
       if (getters.uid) {
         console.log(usecartInfo)
+        //usercartInfoのプロパティが0だったら = カート情報がなければ
         if (!Object.keys(usecartInfo).length) {
-          console.log('aaa')
           const initState = {
               Items: [selectItem],
               address: '',
@@ -129,40 +135,44 @@ export default new Vuex.Store({
               status: 0,
             }
           firebase.firestore().collection(`users/${getters.uid}/carts`)
+            //カート情報（選択された商品selectItemと空のユーザー情報)を追加
             .add(initState).then(doc => {
                commit('useCart', { id: doc.id, cartItem: initState })   
               })
         } else {
-          // let usecartInfo = Object.assign({}, state.useCart)
+          //カート情報のItems(商品情報)配列だけをusercartInfoのItemsプロパティに代入
           usecartInfo.Items = state.useCart.Items.slice()
+          console.log(usecartInfo.Items)
+          //Itemsプロパティ（配列）に選ばれた商品情報を追加
           usecartInfo.Items.push(selectItem)
           console.log(usecartInfo.Items)
-          console.log(getters.uid)
-          console.log(selectItem)
-          // let hairetsu = usecartInfo.Items.concat().slice(1, -1) 
           firebase.firestore().collection(`users/${getters.uid}/carts`)
+            // usercartInfoのorderIDを指定して、カート情報を更新
             .doc(usecartInfo.orderID).update(usecartInfo)
           commit('updateCart', { selectItem })
         }
       }
     },
+    //カートから商品を削除する＝カートのItemsを更新する
     deleteInCart({ state, getters, commit }, cart){
       if(getters.uid){
         firebase.firestore().collection(`users/${getters.uid}/carts`)
+          // カートの中のorderIDと一致するカートを指定して、
+          // Itemsプロパティを更新する
             .doc(state.useCart.orderID).update({ Items: cart})
           commit('deleteFromCart', cart)
       }
     },
-    //カート情報とってくる(App.vue)
-    //ログインしたらユーザー情報持ってくる
     fecthCartItem({ getters, commit }) {
+      //ログインしたユーザー情報のパスを指定して、カート情報を持ってくる
       firebase.firestore().collection(`users/${getters.uid}/carts`)
         .get().then(snapshot => {
           snapshot.forEach(doc => {
-            //statusが0の場合、未購入の場合ショッピングカートに反映
+            //カートのstatusが0(未購入)の場合、useCartを実行
             if (doc.data().status === 0) {
+              // idはfirestore上の自動生成されたid、cartItemはカートの中身の情報
               commit('useCart', { id: doc.id, cartItem: doc.data() })
-              //statusが0以外の場合、購入済みの場合履歴に反映
+              //statusが0以外(購入済み)の場合履歴に反映
             } else if (doc.data().status !== 0) {
               commit('historyCart', { id: doc.id, cartItem: doc.data() });
             }
@@ -170,12 +180,14 @@ export default new Vuex.Store({
         })
     },
     //注文ボタンの後に実行される
-    addCustomerInfo({ state,getters, commit }, customerInfo) {
+    addCustomerInfo({ state, getters, commit }, customerInfo) {
+      //変数CIに入力されたユーザー情報を代入
       let CI = Object.assign({}, customerInfo)
       CI.Items = state.useCart.Items
       console.log(state.useCart.Items)
       console.log(CI)
       firebase.firestore().collection(`users/${getters.uid}/carts`)
+      // カートを指定して、ユーザー情報を更新する
         .doc(state.useCart.orderID).update(CI)
           commit('addCustomerInfo', CI)
     }

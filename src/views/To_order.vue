@@ -125,8 +125,10 @@ methods: {
         this.errors.push("配達日時を入力して下さい");
       } //配達日時のバリデーション
 
+      // エラーがなかったら
       if (!this.errors.length) {
          e.preventDefault();
+         //入力されたユーザー情報をactions(addCustomerInfo)に渡す
         this.addCustomerInfo(this.CustomerInfo);
         this.$router.push({ name: "Done" });
         return true;

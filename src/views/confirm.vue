@@ -10,7 +10,7 @@
                         <td>
                             <p>商品名：{{ getItem(cart.id).name }}</p>
                             <p>サイズ：{{cart.itemSize}}</p>
-                            <p>追加トッピング：{{cart.choeseToppings}}</p>
+                            <p>追加トッピング：{{cart.choseToppings}}</p>
                             <p>個数:{{cart.itemCount}}個</p>
                             <p>小計:{{cart.totalPrice}}円</p>
                             <div>
@@ -55,15 +55,9 @@ export default {
 
     methods:{
         ...mapActions(['BuyInCart','DeleteInCart']),
-
         Buy(){
-            console.log('購入ボタンが押されました！');
+            //購入ボタンが押されたらcartSampleアクションズを呼び出す
             this.cartSample();
-        },
-         deleteConfirm(id){
-            if(confirm("削除してもよろしいですか？")){
-                this.deleteCartItem({id})
-            }
         },
     },
     computed:{

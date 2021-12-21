@@ -1,8 +1,5 @@
 <template>
   <div class="home">
-      <!-- <button @click="logout" v-if="$store.state.login_user">ログアウト</button>
-      <button @click="login" v-else>ログイン</button>
-    <img :src="url"> -->
     <h1>コーヒーの商品検索</h1>
     <input type="text" v-model="search">
     <button>検索</button>
@@ -20,7 +17,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in getlist " :key="item.id">
+        <tr v-for="item in getlist " :key="item.ID">
           <!-- <th>{{item.ID}}</th> -->
           <th>{{item.name}}</th>
           <th>{{item.contents}}</th>
@@ -42,8 +39,6 @@
     },
     data(){
       return {
-        // url:'img_coffee/header_logo.png',
-        // url:require('@/assets/img_coffee/header_logo.png'),
         search:''
       }
     },
@@ -53,6 +48,7 @@
     computed:{
       getlist(){
         const coffeeList  = this.$store.state.coffeeList
+        //商品リストの中からnameが検索ワードに一致したものを返す
         return coffeeList.filter((item) => {
         return item.name.match(this.search)
       })
