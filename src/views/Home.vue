@@ -47,8 +47,6 @@
     },
     data(){
       return {
-        // url:'img_coffee/header_logo.png',
-        // url:require('@/assets/img_coffee/header_logo.png'),
         search:''
       }
     },
@@ -58,6 +56,7 @@
     computed:{
       getlist(){
         const coffeeList  = this.$store.state.coffeeList
+        //商品リストの中からnameが検索ワードに一致したものを返す
         return coffeeList.filter((item) => {
         return item.name.match(this.search)
       })

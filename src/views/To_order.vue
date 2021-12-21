@@ -126,8 +126,10 @@ methods: {
         this.errors.push("配達時間を入力して下さい");
       } //配達時間のバリデーション
 
+      // エラーがなかったら
       if (!this.errors.length) {
          e.preventDefault();
+         //入力されたユーザー情報をactions(addCustomerInfo)に渡す
         this.addCustomerInfo(this.CustomerInfo);
         this.$router.push({ name: "Done" });
         return true;

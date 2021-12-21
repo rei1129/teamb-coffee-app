@@ -75,35 +75,42 @@ export default {
     },
     created(){
         //this.$route.params.idは選択された商品のid
-        //gettersによってstateの配列のなかからidが一致したデータを取得
+        //getItemによってcoffeeList配列のidが一致したデータを取得
         const getItem = this.$store.getters.getItem(this.$route.params.id);
         console.log(getItem)
         if(getItem){
+            //このページで利用するためにitemdetailsに置き換える
             this.itemdetails = getItem
         }
+        //トッピング情報を表示するためにgetToppingを呼び出し
         this.getTopping()
     },
     methods:{
          ...mapActions(['addCartItem','intoCart', 'getTopping']),
         //カートのボタン押されたらaddCartItemを呼び出し
         goCart(){
-            //選ばれた商品をオブジェクトにして渡す
             let selectItems = {
+                //商品id
                 id: this.$route.params.id,
+                //個数
                 itemCount: this.itemCount,
+                //合計金額
                 totalPrice: this.totalPrice(),
                 //MかL
                 itemSize: this.countSize,
                 // 選ばれたトッピング
                 choseToppings: this.choseToppings,
             }
+            //選ばれた商品をオブジェクトにして渡す
             this.addCartItem(selectItems);
         },
         totalPrice(){
             if(this.countSize ==='M'){
+                // (Mサイズの価格 * 個数 + トッピングの個数 * 200円) * 1.1
                  let total = (this.itemdetails.priceM * this.itemCount +this.choseToppings.length * 200) * 1.1
                 return Math.floor(total)
             }else if(this.countSize ==='L'){
+                // (Lサイズの価格 * 個数 + トッピングの個数 * 300円) * 1.1
                  let total=(this.itemdetails.priceL * this.itemCount + this.choseToppings.length *300) * 1.1
                 return Math.floor(total)
             }
